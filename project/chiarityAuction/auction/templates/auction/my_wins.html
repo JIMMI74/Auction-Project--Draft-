@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Register on the forum{% endblock head_title %}
+
+{% block content %}
+    <h2>Active Listings</h2>
+
+    {% for listing in winned_auctions %}
+    <a href="{% url 'listing_view' listing.id %}">
+        <ul>
+            <li>
+                <div class="container">
+                    <div class="row">
+                        <div class="col col-sm">
+                            {{listing.product}}            
+                        </div>
+                        <div class="col col-sm">
+                            {{listing.current_price}}                
+                        </div>
+                        <div class="col col-lg">
+                            {{listing.description}}
+                        </div>
+                        <div class="col col-lg">
+                            {% if listing.photo %}
+                                <img src="{{listing.photo.url}}" alt="" style="max-width: 50%;">
+                            {% else %}
+                                No picture
+                            {% endif %}
+                        </div>
+                        <div class="col col-sm">
+                            {{listing.user}}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </a>
+    {% endfor %}
+
+    {% endblock content %}

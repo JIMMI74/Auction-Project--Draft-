@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+              
+              {% block title %}{{ title }}{% endblock %}
+              
+              {% block content %}
+              
+    <body>
+        <h1>Auctions</h1>
+        <div>
+            {% if user.is_authenticated %}
+                Signed in as <strong>{{ user.username }}</strong>.
+            {% else %}
+                Not signed in.
+            {% endif %}
+        </div>
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'homepage' %}">Active Listings</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create_listing' %}">Create listing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Watchlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">My wins</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Log Out</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Register</a>
+                </li>
+            {% endif %}
+        </ul>
+        <hr>
+        {% block body %}
+        {% endblock %}
+    </body>
+
+{% endblock %}
+
+</html>

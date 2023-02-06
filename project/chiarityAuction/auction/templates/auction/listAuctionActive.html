@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block head_title %}{{ block.super }} - Users List{% endblock head_title %}
+
+{% block content %}
+
+
+{% for list in object_list %}
+
+
+<a href="{% url 'set_bid' list.id %}" class="btn btn-danger">Delete</a>
+
+<h5>{{ list.profile.user }}</h5>
+{{ list.date|date:"M d Y H:m:s" }}
+{{ list.profile.user.email }}
+
+{{ list.profile.user.date_joined|date:"M d Y H:m:s" }}
+{{ list.profile.user.last_login|date:"M d Y H:m:s" }}
+
+{{ list.active }} 
+{% if list.activate == 'True' %}
+
+{{ list.activate
+|add:'<a href="/users/activate/{{ list.id }}">Activate</a>'|safe }}
+
+
+{% else %}
+
+
+{{ list.description }}   
+{{ list.product }}
+{{ listing.current_price }}
+<img src="{{list.photo.url}}" alt="" style="max-width: 30%;">
+
+{% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endfor %}
+
+
+
+{% endblock content %}

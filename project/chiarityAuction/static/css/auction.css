@@ -1,0 +1,124 @@
+body{
+    font-family: 'Coiny', cursive;
+}
+
+.carousel-inner .carousel-caption{
+    padding-bottom: 170px;
+}
+.carousel-inner .carousel-caption h1{
+    font-size: 52px;
+}
+.carousel-inner .carousel-caption button {
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 10px 30px;
+    border-radius: 50px;
+    transition: 0.5s;
+    border: 2px solid #003366;
+    text-decoration: #bbbbbb;
+    background: #447e9b;
+    color: #fff;
+
+}
+
+/* animated css */
+.animate__animated.animate__zoomIn{
+    --animate-delay: 1.7s;
+    --animate-duration: 1.2s
+}
+.animate__animated.animate__bounce{
+    --animate-delay: 1s;
+    --animate-duration: 1.5s
+}
+
+.animate__animated.animate__fadeInDown{
+    --animate-delay: 1s;
+    --animate-duration: 1.5s
+}
+
+.animate__animated.animate__fadeInRight
+{
+    --animate-delay: 1s;
+    --animate-duration: 1.5s
+}
+
+.page {
+    color:white;
+    background-color:deepskyblue;
+    padding:5px 15px 5px 15px;
+    text-decoration:none;
+    border-radius:5px;
+    display: block;
+    width: 120px;
+}
+
+        /* Slideshow container */
+.slideshow-container {
+
+    position: relative;
+    margin: auto;
+}
+
+        /* Caption text */
+.text {
+    color: #f2f2f2;
+    font-size: 15px;
+    padding: 8px 12px;
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+        /* Number text (1/3 etc) */
+.numbertext {
+    color: #f2f2f2;
+    font-size: 12px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+}
+
+        /* The dots/bullets/indicators */
+.dot {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+
+
+
+        /* Fading animation */
+.fade {
+    -webkit-animation-name: fade;
+    -webkit-animation-duration: 1.5s;
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+@keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+        /* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+    .text {font-size: 11px}
+}
+
+.mark {
+  background-color: #1b1b1b;
+  color: #212121;
+}

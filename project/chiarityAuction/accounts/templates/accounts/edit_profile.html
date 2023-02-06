@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h2 class="text-center">Edit Profile</h2>
+
+
+
+	<form method="POST" action="{% url 'edit_profile' %}">
+		{% csrf_token %}
+
+		{% if form.errors %}
+			<div class="alert alert-warning alert-dismissible" role="alert">
+            <button class="close" data-dismiss="alert">
+                    <small><sup>x</sup></small>
+                </button>
+            <p>Your Form Has Errors...</p>
+            {% for field in form %}
+            	{% if field.errors  %}
+            		{{ field.errors }}
+				{% endif %}
+
+
+            {% endfor %}
+
+          </div>
+		{% endif %}
+
+
+			 {{ userform|crispy }}
+		     {{ profileform|crispy }}
+
+
+
+		<input type="submit" value="Save Profile" class="btn-danger">
+	</form>
+    <br/>
+    <p><small><a href="{% url 'password_change' %}">Click Here</a> To Change Your Password</small></p>
+
+<br/><br/>
+{% endblock %}
+

@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - View{% endblock head_title %}
+
+{% block content %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>Listing Details</h2>
+            </div>
+            {% if listing.profile != request.user %}
+            <div class="col">
+                <form action="{% url 'watchlist' %}" method="post">
+                    {% csrf_token %}
+                    {% if not  watchlisted %}
+                        <input type="hidden" name="listing_id" value="{{listing.id}}">
+                        <button type="submit">add to watchlist</button>
+                    {% else %}
+                        <button disabled="disable">add to watchlist</button>
+                    {% endif %}
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{message.tags}}">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if request.user == listing.current_winner and listing.active == False %}
+            <h3>You won this auction!</h3>
+    {% endif %}
+
+    {{listing.product}} <br>
+    
+    Current price: {{listing.current_price}} <br>
+
+    Username: {{listing.profile.user}} <br>
+    
+    Current winner: 
+    {% if listing.current_winner %}
+        {{listing.current_winner}} <br>
+    {% else %}
+        No bids yet <br> 
+    {% endif %}
+    
+    Description: {{listing.description}} <br>
+
+    Status: 
+    
+    {% if listing.active %}
+            Active <br>
+    {% else %}
+            Inactive <br>
+    {% endif %}
+    Start : {{listing.start}} <br>
+    End : {{listing.end}} <br>
+    {% if listing.photo %}
+        <img src="{{listing.photo.url}}" alt="" style="max-width: 50%;"><br>
+    {% endif %}
+    <div id="cd_expire">
+        <div id="cd_day"></div>
+        <div id="cd_hh"></div>
+        <div id="cd_mm"></div>
+        <div id="cd_ss"></div>
+    </div>
+
+    <script>
+        djangoend = new Date("{{ listing.end.isoformat }}"); 
+        let x = setInterval(()=>{
+            var now = new Date().getTime();
+            var distance = djangoend - now;
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("cd_expire").innerHTML = "EXPIRED";
+            }
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById("cd_day").innerHTML = days ;
+            document.getElementById("cd_hh").innerHTML = hours ;
+            document.getElementById("cd_mm").innerHTML = minutes ;
+            document.getElementById("cd_ss").innerHTML = seconds ;
+            
+        }, 1000)
+
+    </script>
+
+
+
+    {% if request.user.pk == listing.profile_id and listing.active == True %}
+        <a class="btn btn-secondary" href="{% url 'edit_listing' listing.id %}">
+            Edit
+        </a>
+        
+        <!-- Close Auction Modal -->
+        <form action="{% url 'close_auction' listing.id %}" method="post">
+            {% csrf_token %}
+            <h1>Close Auction</h1>
+            <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#closeAuctionModal" value="invia"/>      
+        </form>
+        <div class="modal fade" id="closeAuctionModal" tabindex="-1" role="dialog" aria-labelledby="closeAuctionModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="closeAuctionModalLabel">Are you sure to close this auction?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                Winner: {{listing.current_winner}} <br>
+                Price: {{listing.current_price}}
+                </div>
+
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger" href="{% url 'close_auction' listing.id %}">Finish this auction</a>
+                </div>
+            </div>
+            </div>
+        </div>
+        
+    {% else %}
+        {% if request.user.is_authenticated and listing.active == True %}
+            <form action="{% url 'set_bid' listing.id %}" method="post">
+                {% csrf_token %}
+                <h2>Set a Bid:</h2>
+                    <input type="number" min="{{listing.current_price}}" step="any" name="bid" placeholder="{{listing.current_price}}">
+                    <button class="btn btn-secondary" type="submit">
+                        Set bid
+                    </button>
+            </form>
+
+            <!-- inserire pulsante edit e close solo al proprietario -->
+        {% endif %}
+    {% endif %}
+    
+<!-- Comments -->
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Comments</h3>
+        </div>
+        
+        <!-- Comment Modal -->
+        {% if request.user.is_authenticated %}
+        <form action="{% url 'comment' listing.id %}" method="post"> {% csrf_token %}
+            <div class="modal-body">
+                <input type="text" name="comment" placeholder="nuovo commento"/>
+                <input type="submit" value="invio commento"/>
+            </div>
+        </form>
+
+
+        <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="commentLabel">New Comment:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <form action="{% url 'comment' listing.id %}" method="post"> {% csrf_token %}
+                    <div class="modal-body">
+                    <textarea class="form-control" name="comment" cols="30" rows="10">
+                        
+                    </textarea> 
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Post comment</button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+    <table class="table">
+        <thead>
+            <th>user</th>
+            <th>comment</th>
+            <th>date</th>
+        </thead>
+        {% for comment in comments  %}
+        <tr>
+            <td>
+                {{comment.author.user}}
+            </td>
+            <td>
+                {{comment.text}}
+            </td>
+            <td>
+                {{comment.date}}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ 
+
+  {% endblock content %}
+

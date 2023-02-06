@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}New Listing{% endblock %}
+
+{% block content %}
+{% block body %}
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <h2>New Listing</h2>
+    {% load tz %}
+    {% localtime off %}
+    <form action="{% url 'create_listing' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            {{form.as_p}}
+            <input type="submit" value="Save">
+        </div>
+    </form>
+    {% endlocaltime %}
+    
+    
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block head_title %}{{ block.super }} - {{ user }}{% endblock head_title %}
+{% block content %}
+
+
+                <h4>{% if request.user == user %}<h3><strong>{{ user}}</strong></h3>{% endif %}<strong>My lIST</strong></h4>
+                {{ request.user }} {{ user }}
+               
+                 
+            <div class="card-body">
+                {% for listing in watchlist %}
+                     <div class="lead"> date: {{ datetime|date:"M d Y H:m:s"  }}
+                        
+                        {{ listing.auction_listings.product }}
+                     
+                        <img src="{{ listing.auction_listings.photo.url }}">
+                      
+                        {{ listing.auction_listings.starting_bid }}
+                    <hr>
+                <br></div>
+                  <!--  <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="myfile">
+                    <button type="submit">Upload</button>
+                  </form>
+                
+                  {% if uploaded_file_url %}
+                    <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+                  {% endif %} -->
+                        {% endfor %}
+            </div>
+        <div class="card-footer bg-primary"></div>
+    </div>
+ </div>
+{% endblock content %}
